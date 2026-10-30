@@ -6,15 +6,15 @@
 //! let parsed = Guess::new("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36");
 //! assert_eq!(&parsed.to_string(), "Linux Chrome/144.0");
 //! ```
-//! # Notes on usage
-//! This crate is made for simpler logging. If you want to detect browser more robustly,
-//! use the Client-Hints API instead
-//! # Stability
-//! Textual representation of formatted strings is subject to change,
-//! and should not be relied upon. Including `parsed.ver`.
-//! They were designed to be printed or shown to user
+//! # Notes
+//! This crate is made for simpler logging. If you want to detect browser more robustly, use the Client-Hints API instead
 
-use std::fmt;
+#![no_std]
+
+use core::fmt;
+
+extern crate alloc;
+use alloc::string::{String, ToString};
 
 #[cfg(test)]
 mod tests;

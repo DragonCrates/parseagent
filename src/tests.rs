@@ -1,3 +1,6 @@
+extern crate alloc;
+use alloc::string::{String, ToString};
+
 use crate::Guess;
 
 fn format(a: &str) -> String {
@@ -173,4 +176,9 @@ fn dots() {
     let _ = format("Chrome/141.0.0");
     let _ = format("Chrome/141.0.0.");
     let _ = format("Chrome/141.0.0.0");
+}
+
+#[test]
+fn empty_string() {
+    assert_eq!(format(""), "Unknown");
 }

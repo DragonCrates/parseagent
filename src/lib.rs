@@ -42,9 +42,6 @@ impl Engine {
             _ => false,
         }
     }
-    fn is_unknown(&self) -> bool {
-        matches!(self, Engine::Unknown(_))
-    }
 }
 
 impl Default for Engine {
@@ -170,7 +167,15 @@ impl Guess {
 
         if matches!(guess.engine, Engine::Unknown(_)) {
             // Couldn't guess = set to first segment (Usually, "Mozilla/5.0")
-            guess.engine = Engine::Unknown(user_agent.split(' ').next().unwrap().to_string());
+            let tok = user_agent.split(' ').next().unwrap();
+            if let Some(slash) = tok.find('/') {
+                // "Mozilla"
+                guess.engine = Engine::Unknown(tok[..slash].to_string());
+                // "5.0"
+                guess.ver = tok[slash+1..].to_string();
+            } else {
+                guess.engine = Engine::Unknown(tok.to_string());
+            }
         }
 
         guess
@@ -179,13 +184,18 @@ impl Guess {
 
 impl fmt::Display for Guess {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // os
         write!(f, "{}", self.os)?;
         if !self.engine.is_empty() {
+            // engine
             write!(f, " {}", self.engine)?;
+
+            if !self.ver.is_empty() {
+                // ver
+                write!(f, "/{}", self.ver)?;
+            }
         }
-        if !self.ver.is_empty() && !self.engine.is_unknown() {
-            write!(f, "/{}", self.ver)?;
-        }
+
         Ok(())
     }
 }
